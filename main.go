@@ -211,12 +211,8 @@ func saneMode() {
 }
 
 func getCategory(t Txn) (prefix, cat string) {
-	prefix = "[TO]"
-	cat = t.To
-	if t.Cur > 0 {
-		prefix = "[FROM]"
-		cat = t.From
-	}
+	prefix = ""
+	cat = t.From
 	return
 }
 
@@ -380,11 +376,7 @@ func main() {
 
 	for i := range txns {
 		txns[i].CurName = *currency
-		if txns[i].Cur > 0 {
-			txns[i].To = *account
-		} else {
-			txns[i].From = *account
-		}
+		txns[i].From = *account
 	}
 	if len(txns) > 0 {
 		performPayeeSubstitution(txns, payeeSubsts, &existingPayees)
