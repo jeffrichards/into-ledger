@@ -16,6 +16,8 @@ import (
 
 func checkf(err error, format string, args ...interface{}) {
 	if err != nil {
+		//we're erroring out, reset the terminal.
+		exec.Command("stty", "-F", "/dev/tty", "sane").Run()
 		log.Printf(format, args...)
 		log.Println()
 		log.Fatalf("%+v", errors.WithStack(err))
