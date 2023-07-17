@@ -210,25 +210,20 @@ func saneMode() {
 	exec.Command("stty", "-F", "/dev/tty", "sane").Run()
 }
 
-func getCategory(t Txn) (prefix, cat string) {
-	prefix = "[TO]"
-	cat = t.To
-	if t.Cur > 0 {
-		prefix = "[FROM]"
-		cat = t.From
-	}
+func getCategory(t Txn) (cat string) {
+	cat = t.From
 	return
 }
 
 func printCategory(t Txn) {
-	prefix, cat := getCategory(t)
+	cat := getCategory(t)
 	if len(cat) == 0 {
 		return
 	}
 	if len(cat) > catLength {
 		cat = cat[len(cat)-catLength:]
 	}
-	color.New(color.BgGreen, color.FgBlack).Printf(" %6s %-20s ", prefix, cat)
+	color.New(color.BgGreen, color.FgBlack).Printf(" %-20s ", cat)
 }
 
 func printSummary(t Txn, idx, total int) {
@@ -380,11 +375,7 @@ func main() {
 
 	for i := range txns {
 		txns[i].CurName = *currency
-		if txns[i].Cur > 0 {
 			txns[i].To = *account
-		} else {
-			txns[i].From = *account
-		}
 	}
 	if len(txns) > 0 {
 		performPayeeSubstitution(txns, payeeSubsts, &existingPayees)

@@ -30,9 +30,9 @@ func (p *parser) categorizeTxn(t *Txn, idx, total int) float64 {
 		fmt.Println()
 	}
 	{
-		prefix, cat := getCategory(*t)
+		cat := getCategory(*t)
 		if len(cat) > catLength {
-			color.New(color.BgGreen, color.FgBlack).Printf("%6s %s", prefix, cat)
+			color.New(color.BgGreen, color.FgBlack).Printf("%s", cat)
 			fmt.Println()
 		}
 	}
@@ -63,21 +63,13 @@ func (p *parser) categorizeTxn(t *Txn, idx, total int) float64 {
 func (p *parser) classifyTxn(t *Txn) {
 	if !t.Done {
 		hits := p.topHits(t.Desc)
-		if t.Cur < 0 {
-			t.To = string(hits[0])
-		} else {
 			t.From = string(hits[0])
-		}
 	}
 }
 
 // Assign account to transaction, smartly according to the sign of the amount
 func assignAccount(t *Txn, accountName string) {
-	if t.Cur > 0 {
-		t.From = accountName
-	} else {
-		t.To = accountName
-	}
+	t.From = accountName
 }
 
 func (p *parser) fuzzyAndGetResult(existingAccounts *AccountSet, t *Txn) float64 {
@@ -175,11 +167,7 @@ func (p *parser) showAndCategorizeTxns(rtxns []Txn) {
 					return i
 				}
 
-				if t.Cur > 0 {
-					dst.From = t.From
-				} else {
-					dst.To = t.To
-				}
+				dst.From = t.From
 				dst.Done = true
 			}
 			return len(txns)
@@ -250,11 +238,7 @@ func (p *parser) categorizeByRules(txns []Txn) []Txn {
 	var count int
 	for _, t := range txns {
 		if cat := matchesCategory(t); len(cat) > 0 {
-			if t.Cur > 0 {
 				t.From = cat
-			} else {
-				t.To = cat
-			}
 			count++
 			printSummary(t, count, count)
 			p.writeToDB(t)
