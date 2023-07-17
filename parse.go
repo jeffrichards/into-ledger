@@ -174,6 +174,8 @@ func parseTransactionsFromCSV(in []byte) []Txn {
 
 	result := make([]Txn, 0, 100)
 	r := csv.NewReader(bytes.NewReader(in))
+    r.FieldsPerRecord = -1 //be loose if there isn't a consistent numbers of columns, I'm looking at you RBC
+    r.LazyQuotes = true // lazy quotes means that a description like "Toys "R" Us" won't break everything.
 	r.Comma = []rune(*comma)[0]
 	var t Txn
 	var skipped int
