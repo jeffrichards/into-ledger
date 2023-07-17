@@ -228,6 +228,7 @@ func printCategory(t Txn) {
 	if len(cat) > catLength {
 		cat = cat[len(cat)-catLength:]
 	}
+	color.New(color.BgGreen, color.FgBlack).Printf(" %6s %-20s ", prefix, cat)
 }
 
 func printSummary(t Txn, idx, total int) {
